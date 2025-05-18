@@ -1,0 +1,1326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CrickBUDDY - Live Scores & Stats</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+   <style> 
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #ffffff, #000000, #ceceff);        color: #bbbbbb;
+        transition: background 0.5s ease-in-out;
+        overflow-x: hidden;
+        /* overflow-y: hidden; Prevent horizontal scrollbar */
+    }
+    .text-muted {
+        color: #6cce55 !important;
+        --bs-text-opacity: 1;
+    }
+
+    .best-xi-table {
+        background: linear-gradient(145deg, #1a1a2e, #16213e);
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 8px 20px rgba(0, 255, 204, 0.2);
+        margin-top: 20px;
+    }
+
+    .best-xi-table thead {
+        background: linear-gradient(90deg, #00ffcc, #00cc99);
+    }
+
+    .best-xi-table thead th {
+        color: #000000;
+        font-weight: bold;
+        text-transform: uppercase;
+        padding: 15px;
+        border: none;
+    }
+
+    .best-xi-table tbody tr {
+        transition: all 0.3s ease;
+        border: none;
+    }
+
+    .best-xi-table tbody tr:hover {
+        background: rgba(0, 255, 204, 0.1);
+        transform: translateX(5px);
+    }
+
+    .best-xi-table tbody td {
+        padding: 15px;
+        color: #000000;
+        font-weight: bold;
+        border: none;
+        border-bottom: 1px solid rgba(0, 255, 204, 0.1);
+    }
+
+    .best-xi-table tbody td.fw-bold {
+        color: #000000;
+    }
+
+    .best-xi-table tbody td.text-capitalize {
+        font-size: 1.1em;
+        letter-spacing: 0.5px;
+        color: #000000;
+        font-weight: bold;
+    }
+
+    #xiResult h4 {
+        color: #00ffcc;
+        font-size: 1.8em;
+        margin-bottom: 25px;
+        text-align: center;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        text-shadow: 0 0 10px rgba(0, 255, 204, 0.3);
+    }
+
+    .table-responsive {
+        border-radius: 15px;
+        padding: 10px;
+        background: linear-gradient(145deg, rgba(26, 26, 46, 0.8), rgba(22, 33, 62, 0.8));
+    }
+    
+    .navbar {
+        background: linear-gradient(90deg, #0f2027, #203a43, #2c5364);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+    }
+    
+    .navbar-nav .nav-link {
+        color: #00ffcc !important;
+        font-weight: bold;
+        text-shadow: 0 0 10px rgba(0, 255, 204, 0.5);
+        transition: all 0.3s ease;
+    }
+    
+    .navbar-nav .nav-link:hover {
+        color: #00ffcc !important;
+        text-shadow: 0 0 20px rgba(0, 255, 204, 0.8);
+        transform: scale(1.05);
+    }
+    
+    .search-container {
+        background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/static/images/c4.jpg') center/cover no-repeat;
+        padding: 4rem 0;
+        margin-bottom: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+        color: #fff;
+        transition: all 0.4s ease-in-out;
+    }
+    
+    .input-group .form-control {
+        background-color: #1c1c2b;
+        color: white;
+        border: none;
+    }
+    
+    .input-group .form-control::placeholder {
+        color: #ccc;
+    }
+    
+    .btn-success {
+        background: linear-gradient(90deg, #11998e, #38ef7d);
+        border: none;
+        box-shadow: 0 6px 20px rgba(0, 255, 204, 0.3);
+        transition: all 0.4s ease;
+    }
+    
+    .btn-success:hover {
+        transform: scale(1.05);
+        background: linear-gradient(90deg, #38ef7d, #11998e);
+        box-shadow: 0 10px 30px rgba(0, 255, 204, 0.5);
+    }
+    
+    .card,
+    .schedule-card,
+    .player-card,
+    .player-card-comparison {
+        border-radius: 20px;
+        background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url('/static/images/c2.jpg') center/cover no-repeat;
+        border: none;
+        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.6);
+        transition: all 0.3s ease;
+        color: #ffffff;
+        padding: 1.5rem;
+        margin: 1rem 0;
+        min-height: 230px;
+        width: 100%;
+        overflow: hidden;
+        word-wrap: break-word;
+    }
+
+    .card-body h2,
+    .card-body h4,
+    .card-body .lead {
+        color: #ffffff;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    .text-muted {
+        color: #a8ffa8 !important;
+        --bs-text-opacity: 1;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+    }
+
+    .list-group-item {
+        background: rgba(33, 37, 41, 0.9);
+        color: #ffffff;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 4px 12px rgba(0, 255, 204, 0.1);
+        transition: transform 0.2s;
+    }
+
+    .badge {
+        font-size: 0.9em;
+        padding: 0.5em 0.8em;
+    }
+
+    .card-title {
+        font-size: 1.4rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+    
+    .card:hover,
+    .schedule-card:hover,
+    .player-card:hover,
+    .player-card-comparison:hover {
+        transform: translateY(-10px) scale(1.02);
+        box-shadow: 0 20px 35px rgba(0, 255, 204, 0.4);
+        transition: all 0.3s ease;
+    }
+    
+    .section-title {
+        color: #00ffcc;
+        border-bottom: 2px solid #00ffcc;
+    }
+    .section-title1 {
+        color: #160535;
+    border-bottom: 2px solid #000000;
+    }
+    .section-title2 {
+        color: #32c07b;
+        border-bottom: 2px solid #4bfd93;
+    }
+    
+    footer {
+        background: linear-gradient(90deg, #0f2027, #203a43, #2c5364);
+    }
+    
+    footer .social-icons a:hover {
+        color: #00ffcc;
+    }
+    
+    .stat-table th {
+        background-color: #00ffcc;
+        color: #000;
+        font-weight: 600;
+        padding: 12px;
+        text-align: center;
+    }
+    
+    .stat-table td {
+        background-color: #212529;
+        color: #ddd;
+        border: 1px solid #ddd;
+        padding: 12px;
+        text-align: center;
+    }
+    
+    .stat-table th, .stat-table td {
+        border-radius: 8px;
+    }
+    
+    .list-group-item {
+        background: #212529;
+        color: #ddd;
+        border: none;
+        box-shadow: 0 4px 12px rgba(0, 255, 204, 0.1);
+        transition: transform 0.2s;
+    }
+    
+    .list-group-item:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(0, 255, 204, 0.2);
+    }
+    
+    .comparison-divider {
+        background-color: #00ffcc;
+        color: #111;
+    }
+    
+    .spinner-border {
+        border-color: #00ffcc #fff #fff #00ffcc;
+    }
+    
+    .player-card {
+        background: linear-gradient(145deg, #1a1a2e, #16213e);
+        border-radius: 12px;
+        margin-top: 30px;
+        padding: 20px;
+    }
+    
+    .player-card img {
+        max-width: 200px; /* Increased the size of the image */
+        height: 200px;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 5px solid #00ffcc; /* Add a border around the image */
+    }
+    
+    .player-card-body {
+        padding-left: 20px;
+    }
+    
+    .player-card h2 {
+        font-size: 24px;
+        color: #fff;
+    }
+    
+    .player-card .lead {
+        font-size: 18px;
+        color: #bbb;
+    }
+    
+    .card-body {
+        padding: 20px;
+    }
+    
+    h3 {
+        color: #fff;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+    }
+    
+    table, th, td {
+        border: 1px solid #ddd;
+    }
+    
+    th, td {
+        padding: 12px;
+        text-align: center;
+    }
+    
+    thead {
+        background-color: #00ffcc;
+        color: #000;
+        font-weight: bold;
+    }
+    
+    tbody tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+    
+    tbody tr:hover {
+        background-color: #ddd;
+    }
+    
+    @media (max-width: 767px) {
+        .stat-table th, .stat-table td {
+            padding: 8px;
+        }
+    
+        .player-card img {
+            width: 100%;
+            height: auto;
+        }
+    }
+    
+    .stat-table {
+        margin-bottom: 30px; /* Add margin between the tables */
+    }
+    
+    .card-body {
+        padding: 10px 20px; /* Adjusted padding */
+    }
+    
+    .container {
+        padding: 15px; /* Add spacing for the profile container */
+    }
+    
+    .card-body h2,
+    .card-body h4 {
+        margin-bottom: 10px; /* Adjust the margins for spacing */
+    }
+    @import url('https://fonts.googleapis.com/css2?family=Russo+One&display=swap');
+
+    .display-4 {
+        font-family: 'Russo One', sans-serif;
+        font-size: 4.5rem;
+        font-weight: 700;
+        color: #a3fbed;
+        text-shadow: 3px 3px 6px rgba(211, 203, 203, 0.8);
+        letter-spacing: 2px;
+        background: #f5f5f5;
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        position: relative;
+        z-index: 1;
+        cursor: pointer;
+    }
+
+    .display-4::after {
+        content: attr(data-text);
+        position: absolute;
+        left: 0;
+        top: 0;
+        z-index: -1;
+        color: transparent;
+        transition: text-shadow 0.3s ease;
+    }
+
+    .display-4:hover::after {
+        text-shadow: 
+            0 0 20px rgba(163, 251, 237, 0.9),
+            0 0 35px rgba(163, 251, 237, 0.7),
+            0 0 50px rgba(163, 251, 237, 0.5);
+    }
+
+    @keyframes darkglow {
+        from, to {
+            text-shadow: 0 0 20px #003329,
+                        0 0 30px #003329,
+                        0 0 40px #003329;
+        }
+    }
+    
+</style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-success sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="#">🏏 CrickBUDDY</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#live" style="color: #00ffcc !important; font-weight: bold;">Live Scores</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#schedule" style="color: #00ffcc !important; font-weight: bold;">Schedule</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#search" style="color: #00ffcc !important; font-weight: bold;">Player Search</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#comparisonSection" style="color: #00ffcc !important; font-weight: bold;">Player Comparison</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/predict" style="color: #00ffcc !important; font-weight: bold;">Win Predictor</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Search Section -->
+    <div class="search-container" id="search">
+        <div class="container search-content">
+            <div class="row justify-content-center">
+                <div class="col-md-8 text-center">
+                    <h1 class="display-4 mb-4">CrickBUDDY</h1>
+                    <p class="lead mb-4">Your one-stop destination for live scores, player stats, and match schedules</p>
+                    <div class="input-group mb-3">
+                        <input type="text" id="playerSearch" class="form-control form-control-lg" placeholder="Search player..." aria-label="Player search">
+                        <button class="btn btn-success btn-lg" onclick="searchPlayer()">
+                            <i class="fas fa-search me-1"></i> Search
+                            <span id="searchSpinner" class="spinner-border spinner-border-sm loading-spinner" role="status"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Player Profile Section -->
+    <div class="container my-5" id="playerProfile" style="display: none;">
+        <!-- Dynamic content loaded by JavaScript -->
+    </div>
+
+    <!-- Player Comparison Section -->
+    <section class="container my-5" id="comparisonSection">
+        <h2 class="section-title1">Player Comparison</h2>
+        <div class="input-group mb-3">
+            <input type="text" id="player1Search" class="form-control form-control-lg" placeholder="Player 1 Name" aria-label="Player 1 search">
+            <input type="text" id="player2Search" class="form-control form-control-lg" placeholder="Player 2 Name" aria-label="Player 2 search">
+            <button class="btn btn-success btn-lg" onclick="comparePlayers()">
+                <i class="fas fa-balance-scale me-1"></i> Compare Players
+                <span id="compareSpinner" class="spinner-border spinner-border-sm loading-spinner" role="status"></span>
+            </button>
+        </div>
+        <div class="container my-5" id="playerComparison" style="display: none;">
+            <!-- Dynamic comparison content will be loaded here -->
+        </div>
+    </section>
+
+    <!-- Live Scores Section -->
+    <section class="container my-5" id="live">
+        <h2 class="section-title1">Live Matches</h2>
+        <div id="liveScores" class="row g-4">
+            <div class="col-12 text-center">
+                <div class="spinner-border text-success loading-spinner" id="liveSpinner" role="status"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Schedule Section -->
+    <section class="container my-5" id="schedule">
+        <h2 class="section-title">Upcoming Matches</h2>
+        <div id="scheduleList" class="row g-4">
+            <div class="col-12 text-center">
+                <div class="spinner-border text-success loading-spinner" id="scheduleSpinner" role="status"></div>
+            </div>
+        </div>
+    </section>
+
+ 
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // DOM Elements
+
+    
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            updateLiveScores();
+            loadSchedule();
+            
+            // Update live scores every 30 seconds
+            setInterval(updateLiveScores, 30000);
+            
+            // Search input handler
+            playerSearch.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') searchPlayer();
+            });
+        });
+
+        // Fetch and display live matches
+        function updateLiveScores() {
+            liveSpinner.style.display = 'inline-block';
+            
+            fetch('/live')
+                .then(response => response.json())
+                .then(data => {
+                    liveScores.innerHTML = data.map(match => `
+                        <div class="col-md-6 mb-4">
+                            <div class="card h-100 position-relative">
+                                <div class="card-body">
+                                    <span class="badge bg-danger live-badge">LIVE</span>
+                                    <h5 class="card-title">${match}</h5>
+                                    <p class="card-text text-muted">Updated: ${new Date().toLocaleTimeString()}</p>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+                })
+                .catch(error => {
+                    liveScores.innerHTML = `
+                        <div class="col-12">
+                            <div class="alert alert-danger">Failed to load live scores. Please try again later.</div>
+                        </div>
+                    `;
+                })
+                .finally(() => {
+                    liveSpinner.style.display = 'none';
+                });
+        }
+
+        // Fetch and display schedule
+        function loadSchedule() {
+            scheduleSpinner.style.display = 'inline-block';
+            
+            fetch('/schedule')
+                .then(response => response.json())
+                .then(data => {
+                    scheduleList.innerHTML = data.map(item => {
+                        const parts = item.split(' - ');
+                        return `
+                            <div class="col-md-6 col-lg-4">
+                                <div class="schedule-card">
+                                    <h5>${parts[1] || 'Match details not available'}</h5>
+                                    <small>${parts[0] || 'Date not available'}</small>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                })
+                .catch(error => {
+                    scheduleList.innerHTML = `
+                        <div class="col-12">
+                            <div class="alert alert-danger">Failed to load schedule. Please try again later.</div>
+                        </div>
+                    `;
+                })
+                .finally(() => {
+                    scheduleSpinner.style.display = 'none';
+                });
+        }
+
+       // Search player function
+function searchPlayer() {
+    const playerName = playerSearch.value.trim();
+    if (!playerName) return;
+
+    searchSpinner.style.display = 'inline-block';
+    searchSpinner.classList.add('rotating'); // Add rotating animation
+    playerProfile.style.display = 'none';
+
+    fetch(`/players/${encodeURIComponent(playerName)}`)
+        .then(response => {
+            if (!response.ok) throw new Error('Player not found');
+            return response.json();
+        })
+        .then(data => {
+            if (data.error) throw new Error(data.error);
+
+            playerProfile.style.display = 'block';
+            playerProfile.innerHTML = `
+                <div class="card player-card mb-4">
+                    <div class="row g-0">
+                        <!-- Image Section -->
+                        <div class="col-md-4 d-flex justify-content-center align-items-center">
+                            <img src="${data.image || '/static/images/player-placeholder.jpg'}" 
+                                 class="img-fluid player-image rounded-circle border border-success p-2" 
+                                 alt="${data.name}" style="max-width: 100%; height: auto; object-fit: cover;">
+                        </div>
+
+                        <!-- Player Information -->
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h2 class="card-title">${data.name}</h2>
+                                <h4 class="text-muted">${data.country}</h4>
+                                <p class="lead">${data.role}</p>
+
+                                <!-- Player Rankings Section -->
+                                <div class="row mt-4">
+                                    <div class="col-md-6">
+                                        <h4>Batting Rankings</h4>
+                                        <ul class="list-group mb-4">
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                Test
+                                                <span class="badge bg-primary rounded-pill">${data.rankings.batting.test || '-'}</span>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                ODI
+                                                <span class="badge bg-primary rounded-pill">${data.rankings.batting.odi || '-'}</span>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                T20
+                                                <span class="badge bg-primary rounded-pill">${data.rankings.batting.t20 || '-'}</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h4>Bowling Rankings</h4>
+                                        <ul class="list-group mb-4">
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                Test
+                                                <span class="badge bg-primary rounded-pill">${data.rankings.bowling.test || '-'}</span>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                ODI
+                                                <span class="badge bg-primary rounded-pill">${data.rankings.bowling.odi || '-'}</span>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                T20
+                                                <span class="badge bg-primary rounded-pill">${data.rankings.bowling.t20 || '-'}</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Career Statistics Section -->
+                <h3 class="mt-5 mb-3">Career Statistics</h3>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4>Batting</h4>
+                        ${generateStatTable(data.batting_stats)}
+                    </div>
+                    <div class="col-md-6">
+                        <h4>Bowling</h4>
+                        ${generateStatTable(data.bowling_stats)}
+                    </div>
+                </div>
+            `;
+
+            // Scroll to player profile
+            playerProfile.scrollIntoView({ behavior: 'smooth' });
+        })
+        .catch(error => {
+            playerProfile.innerHTML = `
+                <div class="alert alert-danger">
+                    ${error.message || 'Failed to load player data. Please try another name.'}
+                </div>
+            `;
+            playerProfile.style.display = 'block';
+        })
+        .finally(() => {
+            searchSpinner.style.display = 'none';
+            searchSpinner.classList.remove('rotating'); // Remove rotating animation
+        });
+}
+
+
+        // Add new functions
+        function comparePlayers() {
+            const player1Name = player1Search.value.trim();
+            const player2Name = player2Search.value.trim();
+            
+            if (!player1Name || !player2Name) {
+                alert("Please enter both player names");
+                return;
+            }
+            
+            compareSpinner.style.display = 'inline-block';
+            compareSpinner.classList.add('rotating');
+            
+            Promise.all([fetchPlayerData(player1Name), fetchPlayerData(player2Name)]).then(([player1, player2]) => {
+                if (!player1 || !player2) throw new Error("Players not found");
+                renderComparison(player1, player2);
+            }).catch(error => {
+                playerComparison.innerHTML = `
+                    <div class="alert alert-danger">${error.message}</div>
+                `;
+            }).finally(() => {
+                compareSpinner.style.display = 'none';
+                compareSpinner.classList.remove('rotating');
+                playerComparison.style.display = 'block';
+            });
+        }
+
+        async function fetchPlayerData(name) {
+            try {
+                const response = await fetch(`/players/${encodeURIComponent(name)}`);
+                if (!response.ok) throw new Error("Player not found");
+                const data = await response.json();
+                if (data.error) throw new Error(data.error);
+                return data;
+            } catch (error) {
+                throw error;
+            }
+        }
+
+        function renderComparison(p1, p2) {
+            playerComparison.innerHTML = `
+                <div class="player-vs-container">
+                    <div class="comparison-divider"></div>
+                    <div class="row mb-4">
+                        <div class="col-md-6 pe-4">
+                            <div class="card player-card-comparison player-1-card mb-4">
+                                <div class="row g-0">
+                                    <div class="col-md-4">
+                                        <img src="${p1.image || '/static/images/player-placeholder.jpg'}" 
+                                            class="img-fluid player-image" alt="${p1.name}">
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="card-body">
+                                            <h2 class="card-title">${p1.name}</h2>
+                                            <h4 class="text-muted">${p1.country}</h4>
+                                            <p class="lead">${p1.role}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 ps-4">
+                            <div class="card player-card-comparison player-2-card mb-4">
+                                <div class="row g-0">
+                                    <div class="col-md-4">
+                                        <img src="${p2.image || '/static/images/player-placeholder.jpg'}" 
+                                            class="img-fluid player-image" alt="${p2.name}">
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="card-body">
+                                            <h2 class="card-title">${p2.name}</h2>
+                                            <h4 class="text-muted">${p2.country}</h4>
+                                            <p class="lead">${p2.role}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Rankings Comparison Section -->
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="card border-success mb-4">
+                            <div class="card-header bg-success text-white">
+                                <h4 class="mb-0">ICC Rankings</h4>
+                            </div>
+                            <div class="card-body">
+                                <table class="table table-striped stat-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Ranking Type</th>
+                                            <th>${p1.name}</th>
+                                            <th>${p2.name}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Test Batting</td>
+                                            <td>${p1.rankings.batting.test || '-'}</td>
+                                            <td>${p2.rankings.batting.test || '-'}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>ODI Batting</td>
+                                            <td>${p1.rankings.batting.odi || '-'}</td>
+                                            <td>${p2.rankings.batting.odi || '-'}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>T20 Batting</td>
+                                            <td>${p1.rankings.batting.t20 || '-'}</td>
+                                            <td>${p2.rankings.batting.t20 || '-'}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Test Bowling</td>
+                                            <td>${p1.rankings.bowling.test || '-'}</td>
+                                            <td>${p2.rankings.bowling.test || '-'}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>ODI Bowling</td>
+                                            <td>${p1.rankings.bowling.odi || '-'}</td>
+                                            <td>${p2.rankings.bowling.odi || '-'}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>T20 Bowling</td>
+                                            <td>${p1.rankings.bowling.t20 || '-'}</td>
+                                            <td>${p2.rankings.bowling.t20 || '-'}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <h3>Batting Comparison</h3>
+                        ${generateComparisonTable('batting', p1, p2)}
+                    </div>
+                    <div class="col-md-6">
+                        <h3>Bowling Comparison</h3>
+                        ${generateComparisonTable('bowling', p1, p2)}
+                    </div>
+                </div>
+            `;
+        }
+
+        function generateComparisonTable(statType, p1, p2) {
+            const p1Stats = p1[`${statType}_stats`];
+            const p2Stats = p2[`${statType}_stats`];
+            
+            if (!p1Stats || !p2Stats) return '<p>No stats available</p>';
+            
+            const headers = Object.keys(p1Stats.test);
+            const formats = ['test', 'odi', 't20'];
+            
+            let html = `
+                <table class="table table-striped stat-table">
+                    <thead>
+                        <tr>
+                            <th>Stat</th>
+                            <th>${p1.name}</th>
+                            <th>${p2.name}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            formats.forEach(format => {
+                const p1Data = p1Stats[format] || {};
+                const p2Data = p2Stats[format] || {};
+                
+                headers.forEach(header => {
+                    const statName = `${format.toUpperCase()} ${header.replace(/_/g, ' ').toUpperCase()}`;
+                    html += `
+                        <tr>
+                            <td>${statName}</td>
+                            <td>${p1Data[header] || '-'}</td>
+                            <td>${p2Data[header] || '-'}</td>
+                        </tr>
+                    `;
+                });
+            });
+            
+            html += `
+                    </tbody>
+                </table>
+            `;
+            
+            return html;
+        }
+
+        // Add event listeners for the new inputs
+        player1Search.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') comparePlayers();
+        });
+
+        player2Search.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') comparePlayers();
+        });
+    </script>
+</body>
+</html>
+
+
+
+<script>
+    // DOM Elements
+    const playerSearch = document.getElementById('playerSearch');
+    const playerProfile = document.getElementById('playerProfile');
+    const liveScores = document.getElementById('liveScores');
+    const scheduleList = document.getElementById('scheduleList');
+    const searchSpinner = document.getElementById('searchSpinner');
+    const liveSpinner = document.getElementById('liveSpinner');
+    const scheduleSpinner = document.getElementById('scheduleSpinner');
+
+    // Initialize the page
+    document.addEventListener('DOMContentLoaded', function() {
+        updateLiveScores();
+        loadSchedule();
+        
+        // Update live scores every 30 seconds
+        setInterval(updateLiveScores, 30000);
+        
+        // Search input handler
+        playerSearch.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') searchPlayer();
+        });
+    });
+
+    // Fetch and display live matches
+    function updateLiveScores() {
+        liveSpinner.style.display = 'inline-block';
+        
+        fetch('/live')
+            .then(response => response.json())
+            .then(data => {
+                liveScores.innerHTML = data.map(match => `
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100 position-relative">
+                            <div class="card-body">
+                                <span class="badge bg-danger live-badge">LIVE</span>
+                                <h5 class="card-title">${match}</h5>
+                                <p class="card-text text-muted">Updated: ${new Date().toLocaleTimeString()}</p>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            })
+            .catch(error => {
+                liveScores.innerHTML = `
+                    <div class="col-12">
+                        <div class="alert alert-danger">Failed to load live scores. Please try again later.</div>
+                    </div>
+                `;
+            })
+            .finally(() => {
+                liveSpinner.style.display = 'none';
+            });
+    }
+
+    // Fetch and display schedule
+    function loadSchedule() {
+        scheduleSpinner.style.display = 'inline-block';
+        
+        fetch('/schedule')
+            .then(response => response.json())
+            .then(data => {
+                scheduleList.innerHTML = data.map(item => {
+                    const parts = item.split(' - ');
+                    return `
+                        <div class="col-md-6 col-lg-4">
+                            <div class="schedule-card">
+                                <h5>${parts[1] || 'Match details not available'}</h5>
+                                <small>${parts[0] || 'Date not available'}</small>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            })
+            .catch(error => {
+                scheduleList.innerHTML = `
+                    <div class="col-12">
+                        <div class="alert alert-danger">Failed to load schedule. Please try again later.</div>
+                    </div>
+                `;
+            })
+            .finally(() => {
+                scheduleSpinner.style.display = 'none';
+            });
+    }
+// Search player function
+function searchPlayer() {
+    const playerName = playerSearch.value.trim();
+    if (!playerName) return;
+
+    searchSpinner.style.display = 'inline-block';
+    searchSpinner.classList.add('rotating'); // Add rotating animation
+    playerProfile.style.display = 'none';
+
+    fetch(`/players/${encodeURIComponent(playerName)}`)
+        .then(response => {
+            if (!response.ok) throw new Error('Player not found');
+            return response.json();
+        })
+        .then(data => {
+            if (data.error) throw new Error(data.error);
+
+            const countryColor = data.country === 'India' ? '#87CEEB' : '#bbb'; // Red for India
+
+            playerProfile.style.display = 'block';
+            playerProfile.innerHTML = `
+                <div class="card player-card mb-4">
+                    <div class="row g-0">
+                        <div class="col-md-4 d-flex justify-content-center align-items-center">
+                            <img src="${data.image || '/static/images/player-placeholder.jpg'}" 
+                                 class="img-fluid player-image rounded-circle border border-success p-2" 
+                                 alt="${data.name}" style="max-width: 300px; height: 300px; object-fit: cover;">
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h2 class="card-title">${data.name}</h2>
+                                <h4 class="text-muted" style="color: ${countryColor};">${data.country}</h4>
+                                <p class="lead">${data.role}</p>
+                                  
+                                <div class="row mt-4">
+                                    <div class="col-md-6">
+                                        <h4>Batting Rankings</h4>
+                                        <ul class="list-group mb-4">
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                Test
+                                                <span class="badge bg-primary rounded-pill">${data.rankings.batting.test || '-'}</span>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                ODI
+                                                <span class="badge bg-primary rounded-pill">${data.rankings.batting.odi || '-'}</span>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                T20
+                                                <span class="badge bg-primary rounded-pill">${data.rankings.batting.t20 || '-'}</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h4>Bowling Rankings</h4>
+                                        <ul class="list-group mb-4">
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                Test
+                                                <span class="badge bg-primary rounded-pill">${data.rankings.bowling.test || '-'}</span>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                ODI
+                                                <span class="badge bg-primary rounded-pill">${data.rankings.bowling.odi || '-'}</span>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                T20
+                                                <span class="badge bg-primary rounded-pill">${data.rankings.bowling.t20 || '-'}</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 class="mt-5 mb-3">Career Statistics</h3>
+                <div class="row">
+                    <!-- Batting Table -->
+                    <div class="col-md-12 mb-4">
+                        <h4>Batting</h4>
+                        ${generateStatTable(data.batting_stats)}
+                    </div>
+                    <!-- Bowling Table -->
+                    <div class="col-md-12 mb-4">
+                        <h4>Bowling</h4>
+                        ${generateStatTable(data.bowling_stats)}
+                    </div>
+                </div>
+            `;
+
+            // Scroll to player profile
+            playerProfile.scrollIntoView({ behavior: 'smooth' });
+        })
+        .catch(error => {
+            playerProfile.innerHTML = `
+                <div class="alert alert-danger">
+                    ${error.message || 'Failed to load player data. Please try another name.'}
+                </div>
+            `;
+            playerProfile.style.display = 'block';
+        })
+        .finally(() => {
+            searchSpinner.style.display = 'none';
+            searchSpinner.classList.remove('rotating'); // Remove rotating animation
+        });
+}
+
+function generateStatTable(stats) {
+    if (!stats || !stats.test) return '<p>No statistics available</p>';
+    
+    const headers = Object.keys(stats.test);
+    if (headers.length === 0) return '<p>No statistics available</p>';
+    
+    return `
+        <div class="table-responsive">
+            <table class="table table-striped stat-table">
+                <thead>
+                    <tr>
+                        <th>Format</th>
+                        ${headers.map(key => 
+                            `<th>${key.replace(/_/g, ' ').toUpperCase()}</th>`).join('')}
+                    </tr>
+                </thead>
+                <tbody>
+                    ${['test', 'odi', 't20'].map(format => stats[format] ? `
+                        <tr>
+                            <td>${format.toUpperCase()}</td>
+                            ${headers.map(header => 
+                                `<td>${stats[format][header] || '-'}</td>`).join('')}
+                        </tr>
+                    ` : '').join('')}
+                </tbody>
+            </table>
+        </div>
+    `;
+}
+
+
+function generateComparisonTable(statType, p1, p2) {
+    const p1Stats = p1[`${statType}_stats`];
+    const p2Stats = p2[`${statType}_stats`];
+    
+    if (!p1Stats || !p2Stats) return '<p>No stats available</p>';
+    
+    const headers = Object.keys(p1Stats.test);
+    const formats = ['test', 'odi', 't20'];
+    
+    let html = `
+        <table class="table table-striped stat-table">
+            <thead>
+                <tr>
+                    <th>Stat</th>
+                    <th>${p1.name}</th>
+                    <th>${p2.name}</th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
+    
+    formats.forEach(format => {
+        const p1Data = p1Stats[format] || {};
+        const p2Data = p2Stats[format] || {};
+        
+        headers.forEach(header => {
+            const statName = `${format.toUpperCase()} ${header.replace(/_/g, ' ').toUpperCase()}`;
+            html += `
+                <tr>
+                    <td>${statName}</td>
+                    <td>
+                        <img src="${p1.image || '/static/images/player-placeholder.jpg'}" 
+                             alt="${p1.name}" class="img-fluid rounded-circle player-image" 
+                             style="max-width: 50px; height: 50px; object-fit: cover;">
+                        ${p1Data[header] || '-'}
+                    </td>
+                    <td>
+                        <img src="${p2.image || '/static/images/player-placeholder.jpg'}" 
+                             alt="${p2.name}" class="img-fluid rounded-circle player-image" 
+                             style="max-width: 50px; height: 50px; object-fit: cover;">
+                        ${p2Data[header] || '-'}
+                    </td>
+                </tr>
+            `;
+        });
+    });
+    
+    html += `
+            </tbody>
+        </table>
+    `;
+    
+    return html;
+}
+
+
+    // Add event listeners for the new inputs
+    player1Search.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') comparePlayers();
+    });
+
+    player2Search.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') comparePlayers();
+    });
+
+    function predictPlayingXI() {
+        // Inject the HTML for the Predict Playing XI form directly inside a specific container
+        const predictSectionHTML = `
+            <div class="container my-5" id="predict-xi">
+                <h2 class="section-title2">Predict Combined Playing XI</h2>
+                <!-- Form for input -->
+                <form id="predictForm">
+                    <div class="mb-3">
+                        <label for="team1" class="form-label">Team 1</label>
+                        <input type="text" class="form-control" id="team1" placeholder="Enter Team 1 Name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="team2" class="form-label">Team 2</label>
+                        <input type="text" class="form-control" id="team2" placeholder="Enter Team 2 Name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="date" class="form-label">Match Date</label>
+                        <input type="text" class="form-control" id="date" placeholder="Enter Match Date (e.g., March 2025)" required>
+                    </div>
+                    <button type="button" id="predictXIButton" class="btn btn-success">Predict Playing XI</button>
+                    <span id="bestXISpinner" class="spinner-border spinner-border-sm loading-spinner" style="display:none;" role="status"></span>
+                </form>
+
+                <!-- Result Section for Predicted Playing XI -->
+                <div id="xiResult" class="my-4" style="display:none;">
+                    <h4>Best Combined Playing XI:</h4>
+                    <pre id="xiOutput"></pre>
+                </div>
+            </div>
+        `;
+
+        // Instead of replacing the entire content, append the new HTML to a container
+        const predictContainer = document.getElementById('predict-xi-container'); // Make sure this container exists
+        predictContainer.innerHTML = predictSectionHTML;
+
+        // Get DOM elements for the form and result
+        const predictXIButton = document.getElementById('predictXIButton');
+        const xiResultContainer = document.getElementById('xiResult');
+        const xiOutput = document.getElementById('xiOutput');
+        const predictXISpinner = document.getElementById('bestXISpinner');
+        const team1Input = document.getElementById('team1');
+        const team2Input = document.getElementById('team2');
+        const dateInput = document.getElementById('date');
+
+        // Predict Playing XI function
+        predictXIButton.addEventListener('click', function(event) {
+            event.preventDefault();  // Prevent form submission
+
+            const team1 = team1Input.value.trim();
+            const team2 = team2Input.value.trim();
+            const date = dateInput.value.trim();
+
+            // Basic validation for the inputs
+            if (!team1 || !team2 || !date) {
+                alert("Please fill all the fields");
+                return;
+            }
+
+            // Show loading spinner
+            predictXISpinner.style.display = 'inline-block';
+            xiResultContainer.style.display = 'none';
+            xiOutput.innerHTML = '';  // Clear the previous result
+
+            // Log the data being sent to the backend
+            console.log("Sending data to backend:", { date, team1, team2 });
+
+            // Send request to the backend to predict the best combined playing XI
+            fetch('/predict-playing-xi', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    date: date,
+                    team1: team1,
+                    team2: team2
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to get prediction');
+                }
+                return response.json();
+            })
+            .then(data => {
+    console.log("Received data from backend:", data);  // Log the response from the backend
+
+    if (data.result) {
+        // Only include lines that start with a number and a dot (e.g., "1. Player Name")
+        const players = data.result
+            .split('\n')
+            .map(line => line.trim())
+            .filter(line => /^\d+\.\s+.+/.test(line))
+            .map(line => line.replace(/^\d+\.\s*/, ''));
+
+        let tableHTML = `
+            <div class="table-responsive">
+                <table class="table table-hover table-bordered align-middle best-xi-table">
+                    <thead>
+                        <tr>
+                            <th style="width:60px;">#</th>
+                            <th>Player Name</th>
+                            <th style="width:120px;">Role</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${players.map((player, idx) => `
+                            <tr>
+                                <td class="fw-bold text-center">${idx + 1}</td>
+                                <td class="text-capitalize">${player}</td>
+                                <td class="text-center">${idx < 6 ? 'Batsman' : idx < 8 ? 'All-rounder' : 'Bowler'}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            </div>
+        `;
+
+        xiOutput.innerHTML = tableHTML;
+        xiResultContainer.style.display = 'block';
+    } else {
+        alert("Failed to get prediction.");
+    }
+})
+            .catch(error => {
+                console.error("Error:", error);
+                alert("An error occurred while fetching the prediction.");
+            })
+            .finally(() => {
+                // Hide loading spinner
+                predictXISpinner.style.display = 'none';
+            });
+        });
+    }
+
+    // Call the function to display the Predict XI form
+    document.addEventListener('DOMContentLoaded', function() {
+        // Ensure this container is on the page
+        if (!document.getElementById('predict-xi-container')) {
+            const container = document.createElement('div');
+            container.id = 'predict-xi-container';
+            document.body.appendChild(container);
+        }
+
+        predictPlayingXI();
+    });
+
+</script>
+</body>
+</html>
+
