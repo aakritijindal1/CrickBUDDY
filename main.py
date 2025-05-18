@@ -1,8 +1,8 @@
-from flask import Flask, jsonify, request, render_template
+import streamlit as st
 import lxml
 import requests
 from bs4 import BeautifulSoup
-from googlesearch import search  # pip install googlesearch-python
+from googlesearch import search
 import openai
 from datetime import datetime
 import csv
@@ -17,21 +17,68 @@ load_dotenv()
 # Get API key from environment variable
 openai.api_key = os.getenv('OPENAI_API_KEY')
 
-app = Flask(__name__)  # Initialize Flask app once at the top
+def main():
+    st.set_page_config(page_title="CrickBUDDY", page_icon="🏏")
+    
+    # Sidebar for navigation
+    page = st.sidebar.selectbox("Choose a page", ["Home", "Live Scores", "Schedule", "Player Search"])
+    
+    if page == "Home":
+        st.title("🏏 CrickBUDDY")
+        st.write("Your one-stop destination for live scores, player stats, and match schedules")
+        
+    elif page == "Live Scores":
+        st.title("Live Matches")
+        live_matches = get_live_matches()
+        for match in live_matches:
+            st.write(match)
+            
+    elif page == "Schedule":
+        st.title("Upcoming Matches")
+        matches = get_schedule()
+        for match in matches:
+            st.write(match)
+            
+    elif page == "Player Search":
+        st.title("Player Search")
+        player_name = st.text_input("Enter player name")
+        if player_name:
+            player_data = get_player_stats(player_name)
+            if "error" in player_data:
+                st.error(player_data["error"])
+            else:
+                display_player_stats(player_data)
 
-@app.route('/')
-def home():
-    # Render the landing page first
-    return render_template('landing.html')
+def get_live_matches():
+    link = "https://www.cricbuzz.com/cricket-match/live-scores"
+    source = requests.get(link).text
+    page = BeautifulSoup(source, "lxml")
+    
+    page = page.find("div", class_="cb-col cb-col-100 cb-bg-white")
+    matches = page.find_all("div", class_="cb-scr-wll-chvrn cb-lv-scrs-col")
+    
+    return [match.text.strip() for match in matches]
 
-@app.route('/index')
-def index():
-    # This is the route to your main app page
-    return render_template('index.html')
+def get_schedule():
+    link = "https://www.cricbuzz.com/cricket-schedule/upcoming-series/international"
+    source = requests.get(link).text
+    page = BeautifulSoup(source, "lxml")
+    
+    match_containers = page.find_all("div", class_="cb-col-100 cb-col")
+    matches = []
+    
+    for container in match_containers:
+        date = container.find("div", class_="cb-lv-grn-strip text-bold")
+        match_info = container.find("div", class_="cb-col-100 cb-col")
+        
+        if date and match_info:
+            match_date = date.text.strip()
+            match_details = match_info.text.strip()
+            matches.append(f"{match_date} - {match_details}")
+    
+    return matches
 
-
-@app.route('/players/<player_name>', methods=['GET'])
-def get_player(player_name):
+def get_player_stats(player_name):
     query = f"{player_name} cricbuzz"
     profile_link = None
     try:
